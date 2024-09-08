@@ -273,6 +273,7 @@ class Vehicle(AddressableObject):  # pylint: disable=too-many-instance-attribute
                 'climatisationRequestStatus': GenericRequestStatus,
                 'climatisationSettingsRequestStatus': GenericRequestStatus,
                 'auxiliaryHeatingStatus': AuxiliaryHeatingStatus,
+                'climatisationTemperatureOutside': TemperatureOutsideStatus,
             },
             Domain.CLIMATISATION_TIMERS: {
                 'climatisationTimersStatus': ClimatizationTimer,
