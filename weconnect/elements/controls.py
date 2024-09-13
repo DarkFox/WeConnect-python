@@ -403,7 +403,7 @@ class Controls(AddressableObject):
         if isinstance(value, Destination):
             value = Route([value])
 
-        if not value.valid():
+        if not value.valid:
             raise ControlError('Could not control destination, value must be a Route object with at least one valid Destination object')
 
         url = f'https://emea.bff.cariad.digital/vehicle/v1/vehicles/{self.vehicle.vin.value}/destinations'

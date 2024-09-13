@@ -20,33 +20,55 @@ class Address:
 
 @dataclass
 class GeoCoordinate:
-    longitude: float
     latitude: float
+    longitude: float
 
     def to_dict(self) -> dict[str, float]:
-        return {"longitude": self.longitude, "latitude": self.latitude}
+        return {
+            "latitude": self.latitude,
+            "longitude": self.longitude,
+        }
+
+    @property
+    def valid(self) -> bool:
+        return (
+            isinstance(self.latitude, float)
+            and isinstance(self.longitude, float)
+        )
 
 
 class Destination:
+
     def __init__(
         self,
-        address: Optional[Address] = None,
-        geoCoordinate: Optional[GeoCoordinate] = None,
+        geoCoordinate: Optional[GeoCoordinate],
         name: str = "Destination",
+        address: Optional[Address] = None,
         poiProvider: str = "unknown",
     ):
-        if address is None and geoCoordinate is None:
-            raise ValueError("At least one of address or lat/lon must be provided.")
-        if address is not None and geoCoordinate is not None:
-            raise ValueError("Only one of address or lat/lon must be provided.")
+        """
+        A single destination on a route.
+
+        Args:
+            geoCoordinate (GeoCoordinate): A GeoCoordinate instance containing the coordinates of the destination (Required).
+            name (str): A name for the destination to be displayed in the car (Optional, defaults to "Destination").
+            address (Address): The address of the destination, for display purposes only, not used for navigation (Optional).
+            poiProvider (str): The source of the location (Optional, defaults to "unknown").
+        """
+        if geoCoordinate is None or not isinstance(geoCoordinate, GeoCoordinate):
+            raise ValueError('geoCoordinate is required and must be a GeoCoordinate object')
 
         self.address = address
         self.geoCoordinate = geoCoordinate
         self.name = name
         self.poiProvider = poiProvider
 
+    @property
     def valid(self) -> bool:
-        return bool(self.name) and (self.address is not None or self.geoCoordinate is not None)
+        return (
+            self.geoCoordinate is not None
+            and self.geoCoordinate.valid
+        )
 
     def to_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = {
@@ -74,9 +96,10 @@ class Route:
 
         self.destinations = destinations
 
+    @property
     def valid(self) -> bool:
         return bool(self.destinations) and all(
-            isinstance(dest, Destination) and dest.valid() for dest in self.destinations
+            isinstance(dest, Destination) and dest.valid for dest in self.destinations
         )
 
     def to_list(self) -> list[dict[str, Any]]:
