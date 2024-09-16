@@ -53,3 +53,11 @@ jobs:
         with:
           name: python-package
           path: dist/*
+      - name: Generate requirements file
+        run: |
+          echo "https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts/${{ github.run_number }}/python-package.zip" > requirements.txt
+      - name: Upload requirements file
+        uses: actions/upload-artifact@v3
+        with:
+          name: requirements
+          path: requirements.txt
