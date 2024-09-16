@@ -1,4 +1,3 @@
-import copy
 from typing import Any, Optional, Union, Dict, List
 from dataclasses import dataclass
 import json
@@ -28,7 +27,9 @@ class GeoCoordinate:
     longitude: float
 
     def __post_init__(self) -> None:
-        if not isinstance(self.latitude, float) or not isinstance(self.longitude, float):
+        if not isinstance(self.latitude, float) or not isinstance(
+            self.longitude, float
+        ):
             raise TypeError("Latitude and longitude must be floats")
         if not (-90.0 <= self.latitude <= 90.0 and -180.0 <= self.longitude <= 180.0):
             raise ValueError(
@@ -60,7 +61,7 @@ class Destination:
             poiProvider (str): The source of the location (Optional, defaults to "unknown").
         """
         if not isinstance(geoCoordinate, GeoCoordinate):
-            raise ValueError('geoCoordinate is required')
+            raise ValueError("geoCoordinate is required")
 
         self.geoCoordinate = geoCoordinate
         self.name = name or "Destination"
@@ -82,28 +83,29 @@ class Destination:
 
     @classmethod
     def from_dict(cls, dest_dict: Dict[str, Any]) -> "Destination":
-        dest_dict_copy = copy.deepcopy(dest_dict)
         geoCoordinate: Optional[GeoCoordinate] = None
         address: Optional[Address] = None
 
-        if "geoCoordinate" in dest_dict_copy:
-            geoCoordinate = GeoCoordinate(**dest_dict_copy["geoCoordinate"])
+        if "geoCoordinate" in dest_dict:
+            geoCoordinate = GeoCoordinate(**dest_dict["geoCoordinate"])
         else:
             raise ValueError("geoCoordinate is required in destination data")
 
-        if "address" in dest_dict_copy:
-            address = Address(**dest_dict_copy["address"])
+        if "address" in dest_dict:
+            address = Address(**dest_dict["address"])
 
         return cls(
             geoCoordinate=geoCoordinate,
-            name=dest_dict_copy.get("name", "Destination"),
+            name=dest_dict.get("name", "Destination"),
             address=address,
-            poiProvider=dest_dict_copy.get("poiProvider", "unknown"),
+            poiProvider=dest_dict.get("poiProvider", "unknown"),
         )
 
 
 class Route:
-    def __init__(self, destinations: Union[List[Destination], Destination] = []) -> None:
+    def __init__(
+        self, destinations: Union[List[Destination], Destination] = []
+    ) -> None:
         if isinstance(destinations, Destination):
             destinations = [destinations]
         elif (
@@ -111,7 +113,9 @@ class Route:
             or not isinstance(destinations, list)
             or not all(isinstance(dest, Destination) for dest in destinations)
         ):
-            raise TypeError("destinations must be a single Destination or a list of Destination objects.")
+            raise TypeError(
+                "destinations must be a single Destination or a list of Destination objects."
+            )
 
         self.destinations = destinations
 
