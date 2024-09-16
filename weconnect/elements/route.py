@@ -1,3 +1,4 @@
+import copy
 from typing import Any, Optional, Union, Dict, List
 from dataclasses import dataclass
 import json
@@ -81,7 +82,7 @@ class Destination:
 
     @classmethod
     def from_dict(cls, dest_dict: Dict[str, Any]) -> "Destination":
-        dest_dict_copy = dest_dict.copy()
+        dest_dict_copy = copy.deepcopy(dest_dict)
         geoCoordinate: Optional[GeoCoordinate] = None
         address: Optional[Address] = None
 
