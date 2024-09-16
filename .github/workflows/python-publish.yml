@@ -64,12 +64,21 @@ jobs:
           release_name: Release ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
-      - name: Upload Release Asset
+      - name: Upload Release Asset (Wheel)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/*
-          asset_name: python-package.zip
+          asset_path: dist/*.whl
+          asset_name: weconnect-${{ env.version }}.whl
           asset_content_type: application/zip
+      - name: Upload Release Asset (Source)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/*.tar.gz
+          asset_name: weconnect-${{ env.version }}.tar.gz
+          asset_content_type: application/gzip
