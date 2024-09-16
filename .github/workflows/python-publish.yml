@@ -48,16 +48,22 @@ jobs:
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: python-package
-          path: dist/*
-      - name: Generate requirements file
-        run: |
-          echo "https://github.com/${{ github.repository }}/suites/${{ github.run_id }}/artifacts/${{ github.run_number }}/python-package.zip" > requirements.txt
-      - name: Upload requirements file
-        uses: actions/upload-artifact@v3
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: requirements
-          path: requirements.txt
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/*
+          asset_name: python-package.zip
+          asset_content_type: application/zip
