@@ -25,11 +25,14 @@ jobs:
         if: github.event_name != 'push'
         run: |
           echo "version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+          echo "TAG_NAME=v${{ github.event.inputs.version }}" >> $GITHUB_ENV
       - name: Version from pushed tag
         if: github.event_name == 'push'
         run: |
           # from refs/tags/v1.2.3 get 1.2.3
-          echo "version=$(echo $GITHUB_REF | sed 's#.*/v##')" >> $GITHUB_ENV
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "version=${TAG_NAME}" >> $GITHUB_ENV
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
       - name: Autobump version
         run: |
           PLACEHOLDER="__version__ = '0.0.0dev'"
@@ -48,9 +51,6 @@ jobs:
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
-      - name: Extract tag name
-        id: extract_tag
-        run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
