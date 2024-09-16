@@ -51,9 +51,6 @@ jobs:
       - name: Build package
         run: |
           python setup.py sdist bdist_wheel
-      - name: List dist directory
-        run: |
-          ls -la dist
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -64,6 +61,9 @@ jobs:
           release_name: Release ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
+      - name: List dist directory
+        run: |
+          ls -la dist
       - name: Upload Release Asset (Wheel)
         uses: actions/upload-release-asset@v1
         env:
@@ -79,6 +79,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/weconnect-${{ env.version }}.tar.gz
+          asset_path: dist/weconnect-${{ env.version }}-*.tar.gz
           asset_name: weconnect-${{ env.version }}.tar.gz
           asset_content_type: application/gzip
