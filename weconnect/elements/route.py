@@ -81,22 +81,23 @@ class Destination:
 
     @classmethod
     def from_dict(cls, dest_dict: Dict[str, Any]) -> "Destination":
+        dest_dict_copy = dest_dict.copy()
         geoCoordinate: Optional[GeoCoordinate] = None
         address: Optional[Address] = None
 
-        if "geoCoordinate" in dest_dict:
-            geoCoordinate = GeoCoordinate(**dest_dict["geoCoordinate"])
+        if "geoCoordinate" in dest_dict_copy:
+            geoCoordinate = GeoCoordinate(**dest_dict_copy["geoCoordinate"])
         else:
             raise ValueError("geoCoordinate is required in destination data")
 
-        if "address" in dest_dict:
-            address = Address(**dest_dict["address"])
+        if "address" in dest_dict_copy:
+            address = Address(**dest_dict_copy["address"])
 
         return cls(
             geoCoordinate=geoCoordinate,
-            name=dest_dict.get("name", "Destination"),
+            name=dest_dict_copy.get("name", "Destination"),
             address=address,
-            poiProvider=dest_dict.get("poiProvider", "unknown"),
+            poiProvider=dest_dict_copy.get("poiProvider", "unknown"),
         )
 
 
