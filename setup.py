@@ -11,7 +11,7 @@ SETUP_REQUIRED = (HERE / "setup_requirements.txt").read_text()
 TEST_REQUIRED = (HERE / "test_requirements.txt").read_text()
 
 setup(
-    name='weconnect',
+    name='weconnect-darkfox-dev',
     packages=find_packages(),
     version=open("weconnect/__version.py").readlines()[-1].split()[-1].strip("\"'"),
     description='Python API for the Volkswagen WeConnect Services',
